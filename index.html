@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Index of/ </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <h1>Index of/ </h1>
+    
+    <div>
+        <input type="text" id="search-input" placeholder="搜索仓库/搜索关键词..." style="caret-color: #ffcc00;">
+        <button id="search-btn">搜索</button>
+        <label style="margin-left: 15px;">
+            <input type="checkbox" id="jump-to-html" checked> 直接打开项目index.html
+        </label>
+    </div>
+
+    <hr>
+
+    <ul id="repo-list"></ul>
+    <div id="loading" style="display: none;">加载中...</div>
+    <div id="error" style="color: red; display: none;"></div>
+
+    <!-- 先引入jam.js，再引入script.js -->
+    <script type="module" src="jam.js"></script>
+    <script type="module" src="script.js"></script>
+</body>
+</html>
