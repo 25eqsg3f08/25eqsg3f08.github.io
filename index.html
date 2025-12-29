@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Index of/ </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="https://25eqsg3f08-stack.github.io/duseng/favicon.ico">
+    <meta name="apple-mobile-web-app-title" content="项目导航">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#2196F3">
+    <link rel="shortcut icon" href="https://25eqsg3f08-stack.github.io/duseng/favicon.ico" type="image/x-icon">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            background-color: #fff;
+        }
+        h1 {
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+        .search-bar {
+            margin-bottom: 1rem;
+        }
+        #search-input {
+            padding: 0.5rem;
+            width: 300px;
+            max-width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        #search-btn {
+            padding: 0.5rem 1rem;
+            margin-left: 0.5rem;
+            border: none;
+            background-color: #2196F3;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #search-btn:hover {
+            background-color: #1976D2;
+        }
+        hr {
+            margin: 1rem 0;
+            border: 0;
+            border-top: 1px solid #eee;
+        }
+        #repo-list {
+            list-style: none;
+        }
+        #repo-list li {
+            margin: 0.8rem 0;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        #repo-list li:hover {
+            background-color: #f5f5f5;
+        }
+        #repo-list a {
+            color: #2196F3;
+            text-decoration: none;
+            font-size: 1.1rem;
+        }
+        #loading, #error {
+            margin: 1rem 0;
+        }
+        .offline-tip {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 0.5rem;
+            background-color: #ff9800;
+            color: #fff;
+            text-align: center;
+            font-size: 0.9rem;
+            display: none;
+            z-index: 9999;
+        }
+        .install-tip {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.8rem 1.2rem;
+            background-color: #333;
+            color: #fff;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: none;
+            z-index: 999;
+        }
+        /* 新增：空列表提示样式 */
+        .empty-tip {
+            color: #666;
+            margin: 1rem 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-tip" id="offline-tip">当前处于离线状态，仅可访问已缓存的项目</div>
+    <div class="install-tip" id="install-tip">点击右上角 ⋮ 安装到桌面，离线使用更方便</div>
+
+    <h1>Index of/ </h1>
+    <div class="search-bar">
+        <input type="text" id="search-input" placeholder="搜索仓库/搜索关键词..." style="caret-color: #ffcc00;">
+        <button id="search-btn">搜索</button>
+        <label style="margin-left: 15px;">
+            <input type="checkbox" id="jump-to-html" checked> 直接打开项目index.html
+        </label>
+    </div>
+    <hr>
+
+    <ul id="repo-list"></ul>
+    <!-- 新增空列表提示，替代错误信息 -->
+    <div class="empty-tip" id="empty-tip">暂无缓存项目，请先联网访问一次</div>
+    <div id="loading" style="display: none;">加载 中...</div>
+    <div id="error" style="color: red; display: none;"></div>
+
+    <script type="module" src="jam.js"></script>
+    <script type="module" src="script.js"></script>
+    <script>
+        // 1. 注册Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', async () => {
+                try {
+                    await navigator.serviceWorker.register('/sw.js');
+                } catch (err) {
+                    console.error('Service Worker 注册失败:', err);
+                }
+            });
+        }
+
+        // 2. 网络状态处理
+        const offlineTip = document.getElementById('offline-tip');
+        const errorEl = document.getElementById('error');
+        const emptyTip = document.getElementById('empty-tip');
+        const repoListEl = document.getElementById('repo-list');
+
+        function updateNetworkStatus() {
+            if (!navigator.onLine) {
+                offlineTip.style.display = 'block';
+                // 监听错误元素，自动替换为友好提示
+                const observer = new MutationObserver(() => {
+                    if (errorEl.textContent.includes('Failed to fetch')) {
+                        errorEl.style.display = 'none';
+                        // 若无项目列表，显示空提示
+                        if (repoListEl.children.length === 0) {
+                            emptyTip.style.display = 'block';
+                        }
+                    }
+                });
+                observer.observe(errorEl, { childList: true, characterData: true });
+            } else {
+                offlineTip.style.display = 'none';
+                errorEl.style.display = 'none';
+                emptyTip.style.display = 'none';
+            }
+        }
+
+        // 初始化网络状态
+        updateNetworkStatus();
+        window.addEventListener('online', updateNetworkStatus);
+        window.addEventListener('offline', updateNetworkStatus);
+
+        // 3. PWA安装提示逻辑
+        let deferredPrompt;
+        const installTip = document.getElementById('install-tip');
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installTip.style.display = 'block';
+            installTip.addEventListener('click', () => {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(() => {
+                    deferredPrompt = null;
+                    installTip.style.display = 'none';
+                });
+            });
+        });
+        window.addEventListener('appinstalled', () => {
+            installTip.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
