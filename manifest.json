@@ -1,0 +1,17 @@
+{
+  "name": "25eqsg3f08 项目导航",
+  "short_name": "项目导航",
+  "description": "离线访问所有子项目的导航主页",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2196F3",
+  "icons": [
+    {
+      "src": "https://25eqsg3f08-stack.github.io/favicon.ico",
+      "sizes": "16x16 32x32",
+      "type": "image/x-icon"
+    }
+  ],
+  "orientation": "portrait-primary"
+}
