@@ -2,7 +2,7 @@
 import { JAM_CONFIG } from './jam.js';
 
 // 核心配置
-const GITHUB_USER = '25eqsg3f08-stack';
+const GITHUB_USER = '25eqsg3f08';
 const SEARCH_PLACEHOLDER = '搜索仓库/搜索关键词...';
 const AUTO_REFRESH_INTERVAL = 30000;
 const GITHUB_IO_DOMAIN = `${GITHUB_USER}.github.io`;
