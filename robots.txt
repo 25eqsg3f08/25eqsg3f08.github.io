@@ -3,4 +3,4 @@ User-agent: *
 Allow: /
 
 # 指定站点地图位置，帮助搜索引擎快速发现页面
-Sitemap: https://25eqsg3f08-stack.github.io/sitemap.xml
+Sitemap: https://25eqsg3f08.github.io/sitemap.xml
