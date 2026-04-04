@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>空壳浏览器检测</title>
+    <style>
+        body {
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 14px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+<script>
+var r = "=== 空壳浏览器检测 ===\n\n";
+
+var ua = navigator.userAgent || "";
+var p = navigator.platform || "";
+var sw = screen.width || 0;
+var sh = screen.height || 0;
+
+var isWebView = /WebView|wv|Android.*AppleWebKit/i.test(ua) && !/Chrome|Safari|Edge|Firefox/i.test(ua);
+var isFakeUA = /Windows NT|Win64|Macintosh/i.test(ua) && /Android|Linux/i.test(p);
+var isFixedScreen = (sw == 240 && sh == 320) || (sw == 320 && sh == 480) || (sw == 480 && sh == 854);
+var jsOk = typeof Date == "function" && typeof setInterval == "function" && typeof document.getElementById == "function";
+var navOk = !!navigator.userAgent && !!navigator.platform;
+
+r += "UA: " + (ua || "无") + "\n";
+r += "Platform: " + (p || "无") + "\n";
+r += "Screen: " + sw + "x" + sh + "\n";
+r += "WebView内核: " + (isWebView ? "是" : "否") + "\n";
+r += "假UA(伪装电脑): " + (isFakeUA ? "是" : "否") + "\n";
+r += "固定小屏: " + (isFixedScreen ? "是" : "否") + "\n";
+r += "JS基础能力: " + (jsOk ? "正常" : "残缺") + "\n";
+r += "Navigator完整: " + (navOk ? "正常" : "残缺") + "\n\n";
+
+var score = 0;
+if (isWebView) score += 2;
+if (isFakeUA) score += 3;
+if (isFixedScreen) score += 2;
+if (!jsOk) score += 3;
+if (!navOk) score += 2;
+
+r += "空壳风险分: " + score + " / 12\n";
+if (score >= 6) r += "【高危】典型空壳/广告壳浏览器\n";
+else if (score >= 3) r += "【中危】疑似轻量壳浏览器\n";
+else r += "【低危】正常浏览器\n";
+
+document.body.textContent = r;
+</script>
+</body>
+</html>
