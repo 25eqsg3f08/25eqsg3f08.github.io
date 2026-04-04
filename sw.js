@@ -7,7 +7,8 @@ const CACHE_CONFIG = {
         "/script.js",
         "/manifest.json",
         "/f5118f7d8a5995a4b5489a65a9f37fad.txt",
-        "https://25eqsg3f08-stack.github.io/favicon.ico"
+        "https://25eqsg3f08-stack.github.io/favicon.ico",
+        "/chack.html"
     ],
     CACHEABLE_ORIGINS: [self.location.origin],
     API_CACHE_KEY: "repo-api-response" // 标记API请求的缓存键
