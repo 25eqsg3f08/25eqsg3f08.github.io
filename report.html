@@ -15,17 +15,5 @@
           crossorigin="anonymous"
           async>
   </script>
-
-  <script>
-    // 初始檢查
-    if (!navigator.onLine) {
-      window.location.href = "report_off.html";
-    }
-
-    // 監聽網絡狀態變化
-    window.addEventListener("offline", () => {
-      window.location.href = "report_off.html";
-    });
-  </script>
 </body>
 </html>
