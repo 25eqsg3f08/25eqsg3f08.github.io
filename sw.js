@@ -9,7 +9,6 @@ const CACHE_CONFIG = {
         "/f5118f7d8a5995a4b5489a65a9f37fad.txt",
         "https://25eqsg3f08-stack.github.io/favicon.ico",
         "/chack.html",
-        "/report_off.html",
         "/report.html"
     ],
     CACHEABLE_ORIGINS: [self.location.origin],
