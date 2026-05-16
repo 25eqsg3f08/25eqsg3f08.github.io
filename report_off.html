@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>留言展示</title>
+</head>
+<body>
+<h2>GitHub Issues 列表</h2>
+<div id="issues"></div>
+
+<script>
+  async function loadIssues() {
+    const container = document.getElementById("issues");
+
+    // 1. 先讀取本地快取
+    const cached = localStorage.getItem("issuesCache");
+    if (cached) {
+      try {
+        const issues = JSON.parse(cached);
+        renderIssues(issues, container, true); // 標註為快取
+      } catch (e) {
+        console.warn("快取解析失敗:", e);
+      }
+    }
+
+    // 2. 再嘗試抓取最新資料
+    try {
+      const res = await fetch("https://api.github.com/repos/25eqsg3f08/Issues/issues");
+      const issues = await res.json();
+      renderIssues(issues, container, false);
+      // 更新快取
+      localStorage.setItem("issuesCache", JSON.stringify(issues));
+    } catch (err) {
+      console.error("載入失敗:", err);
+    }
+  }
+
+  function renderIssues(issues, container, fromCache) {
+    container.innerHTML = ""; // 清空舊內容
+    issues.forEach(issue => {
+      const div = document.createElement("div");
+      div.innerHTML = `
+        <h3><a href="${issue.html_url}" target="_blank">${issue.title}</a></h3>
+        <p>作者: ${issue.user.login}</p>
+        <p>${issue.body ? issue.body.slice(0, 150) + "..." : "(無內容)"}</p>
+        ${fromCache ? "<small>(快取資料)</small>" : ""}
+        <hr>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  loadIssues();
+</script>
+  <script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/sw.js")
+      .then(reg => console.log("SW 註冊成功:", reg))
+      .catch(err => console.error("SW 註冊失敗:", err));
+  }
+  </script>
+</body>
+</html>
